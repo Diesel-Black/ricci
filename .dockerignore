@@ -1,0 +1,13 @@
+node_modules
+.venv
+venv/
+.env
+.DS_Store
+.gitignore
+.git
+.cursor/*
+.vscode
+.backup*
+*.bak
+__pycache__
+docs/
