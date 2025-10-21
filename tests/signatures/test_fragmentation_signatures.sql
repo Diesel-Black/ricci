@@ -5,7 +5,7 @@
 -- Copyright 2025 Inside The Black Box LLC
 -- Licensed under MIT License
 
-\echo 'Fragmentation: metric dissociation → direction variance exceeds autopoietic stabilization (executes)'
+\echo 'Fragmentation: attractor dissociation → direction variance exceeds autopoietic stabilization (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -14,7 +14,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_dissociation_executes',
-        format('SELECT * FROM ricci.detect_metric_dissociation(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_attractor_dissociation(''%s'')', test_point),
         'fragmentation'
     );
     
@@ -22,7 +22,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Fragmentation: metric dissolution → large gradient vs magnitude with positive acceleration (executes)'
+\echo 'Fragmentation: field dissolution → large gradient vs magnitude with positive acceleration (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -31,7 +31,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_dissolution_executes',
-        format('SELECT * FROM ricci.detect_metric_dissolution(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_field_dissolution(''%s'')', test_point),
         'fragmentation'
     );
     
@@ -39,7 +39,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Fragmentation: metric dispersion → coupling trend negative with low sapience (executes)'
+\echo 'Fragmentation: coupling dispersion → coupling trend negative with low sapience (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -48,7 +48,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_dispersion_executes',
-        format('SELECT * FROM ricci.detect_metric_dispersion(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_coupling_dispersion(''%s'')', test_point),
         'fragmentation'
     );
     
@@ -109,7 +109,7 @@ BEGIN
     LOOP
         PERFORM ricci_test.assert_true(
             'fragmentation_signature_type_valid',
-            signature_rec.signature_type IN ('METRIC_DISSOCIATION', 'METRIC_DISSOLUTION', 'METRIC_DISPERSION'),
+            signature_rec.signature_type IN ('ATTRACTOR_DISSOCIATION', 'FIELD_DISSOLUTION', 'COUPLING_DISPERSION'),
             'fragmentation',
             'Signature type should be a valid fragmentation type'
         );

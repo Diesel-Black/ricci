@@ -22,7 +22,7 @@ SET client_min_messages TO warning;
 \echo '          schema/02_rigidity_detectors.sql'
 \echo '          schema/03_fragmentation_detectors.sql'
 \echo '          schema/04_inflation_detectors.sql'
-\echo '          schema/05_coupling_detectors.sql'
+\echo '          schema/05_distortion_detectors.sql'
 \echo '          schema/06_operational_monitoring.sql'
 \echo ''
 \echo '====================  RFT Foundation  ======================'
@@ -50,9 +50,9 @@ SET client_min_messages TO warning;
 \i schema/04_inflation_detectors.sql
 \echo ''
 
-\echo '==================   Coupling Signatures  =================='
+\echo '==================  Distortion Signatures =================='
 \echo ''
-\i schema/05_coupling_detectors.sql
+\i schema/05_distortion_detectors.sql
 \echo ''
 
 \echo '================  Operational Monitoring  =================='

@@ -65,10 +65,10 @@ SELECT setseed(0.4200000000);
 \echo ''
 
 \echo '============================================================'
-\echo '                  Testing Coupling Modes'
+\echo '                 Testing Distortion Modes'
 \echo '============================================================'
 \echo ''
-\i tests/signatures/test_coupling_signatures.sql
+\i tests/signatures/test_distortion_signatures.sql
 \echo ''
 
 \echo '============================================================'

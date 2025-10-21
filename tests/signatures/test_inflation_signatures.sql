@@ -5,7 +5,7 @@
 -- Copyright 2025 Inside The Black Box LLC
 -- Licensed under MIT License
 
-\echo 'Inflation: metric hyperexpansion → autopoietic >> constraining with low circumspection/sapience (executes)'
+\echo 'Inflation: structure hyperexpansion → autopoietic >> constraining with low circumspection/sapience (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -14,7 +14,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_hyperexpansion_executes',
-        format('SELECT * FROM ricci.detect_metric_hyperexpansion(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_structure_hyperexpansion(''%s'')', test_point),
         'inflation'
     );
     
@@ -22,7 +22,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Inflation: metric hypercoherence → coherence above C_max with low boundary flux (executes)'
+\echo 'Inflation: field hypercoherence → coherence above C_max with low boundary flux (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -31,7 +31,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_hypercoherence_executes',
-        format('SELECT * FROM ricci.detect_metric_hypercoherence(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_field_hypercoherence(''%s'')', test_point),
         'inflation'
     );
     
@@ -39,7 +39,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Inflation: metric hyperasymmetry → local mass growth with ecological drain (executes)'
+\echo 'Inflation: boundary hyperasymmetry → local mass growth with ecological drain (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -48,7 +48,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_hyperasymmetry_executes',
-        format('SELECT * FROM ricci.detect_metric_hyperasymmetry(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_boundary_hyperasymmetry(''%s'')', test_point),
         'inflation'
     );
     
@@ -101,7 +101,7 @@ BEGIN
     LOOP
         PERFORM ricci_test.assert_true(
             'inflation_signature_type_valid',
-            signature_rec.signature_type IN ('METRIC_HYPEREXPANSION', 'METRIC_HYPERCOHERENCE', 'METRIC_HYPERASYMMETRY'),
+            signature_rec.signature_type IN ('STRUCTURE_HYPEREXPANSION', 'FIELD_HYPERCOHERENCE', 'BOUNDARY_HYPERASYMMETRY'),
             'inflation',
             'Signature type should be valid inflation type'
         );

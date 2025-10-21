@@ -1,6 +1,6 @@
 -- RICCI: Riemannian Intrinsic Coherence & Coupling Infrastructure
--- Coupling Signatures: interface breakdowns
--- File: schema/05_coupling_detectors.sql
+-- Distortion Signatures: interpretation breakdowns
+-- File: schema/05_distortion_detectors.sql
 --
 -- Copyright 2025 Inside The Black Box LLC
 -- Licensed under MIT License
@@ -9,13 +9,13 @@
 
 -- Purpose: Detect interpretation breakdowns relative to consensus and external references.
 -- Exposes:
---   - Detect Metric Tension: negative bias with threat‑pattern concentration
---   - Detect Metric Decoupling: interpretation divergence relative to field magnitude
---   - Detect Metric Hypercoupling: self‑coupling dominance with weak external references
+--   - Detect Operative Decoupling: interpretation divergence relative to field magnitude
+--   - Detect Signal Projection: negative bias with threat‑pattern concentration
+--   - Detect Recursive Hypercoupling: self‑coupling dominance with weak external references
 -- Conventions:
 --   - Return tables include (signature_type, severity ∈ [0,1], geometric_signature[], mathematical_evidence)
 
--- Metric Tension
+-- Operative Decoupling
 
 -- Summary: Detect negative interpretation bias with threat‑pattern concentration.
 -- Condition: mean negative bias > θ_bias ∧ threat pattern concentration > τ.
@@ -27,7 +27,107 @@
 -- Numerical guards: Require sufficient samples; compute norms over small window.
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
 -- Severity scaling: severity = clip(bias · threat_concentration · 2).
-CREATE OR REPLACE FUNCTION ricci.detect_metric_tension(
+CREATE OR REPLACE FUNCTION ricci.detect_operative_decoupling(
+    point_id UUID,
+    divergence_threshold FLOAT DEFAULT 0.5,
+    time_window INTERVAL DEFAULT '8 hours'
+) RETURNS TABLE(
+    signature_type TEXT,
+    severity FLOAT,
+    geometric_signature FLOAT[],
+    mathematical_evidence TEXT
+) LANGUAGE plpgsql AS $$
+DECLARE
+    current_coherence VECTOR(2000);
+    user_fp TEXT;
+    
+    interpretation_divergence FLOAT := 0.0;
+    consensus_divergence FLOAT := 0.0;
+    field_magnitude FLOAT;
+    insular_decoupling_ratio FLOAT;
+    decoupling_signature FLOAT;
+    
+    baseline_coherence VECTOR(2000);
+    sample_count INTEGER := 0;
+    
+    rec RECORD;
+BEGIN
+    SELECT mp.coherence_field, mp.user_fingerprint
+    INTO current_coherence, user_fp
+    FROM ricci.manifold_points mp WHERE mp.id = point_id;
+    
+    IF current_coherence IS NULL OR user_fp IS NULL THEN
+        RETURN;
+    END IF;
+    
+    field_magnitude := COALESCE(
+        (SELECT coherence_magnitude FROM ricci.manifold_points WHERE id = point_id),
+        CASE WHEN current_coherence IS NOT NULL THEN COALESCE(ricci.vector_l2_norm(current_coherence), 0.0) ELSE 0.0 END
+    );
+    
+    SELECT mp.coherence_field INTO baseline_coherence
+    FROM ricci.manifold_points mp
+    WHERE mp.user_fingerprint != user_fp
+    ORDER BY mp.creation_timestamp DESC LIMIT 1;
+    
+    IF baseline_coherence IS NULL THEN
+        RETURN;
+    END IF;
+    
+    FOR rec IN (
+        SELECT coherence_field
+        FROM ricci.manifold_points mp
+        WHERE mp.user_fingerprint = user_fp
+        ORDER BY mp.creation_timestamp DESC LIMIT 10
+    ) LOOP
+        sample_count := sample_count + 1;
+        
+        interpretation_divergence := interpretation_divergence + 
+            ricci.vector_l2_distance_first_n(rec.coherence_field, current_coherence, ricci.get_active_dimension());
+        consensus_divergence := consensus_divergence + 
+            ricci.vector_l2_distance_first_n(rec.coherence_field, baseline_coherence, ricci.get_active_dimension());
+    END LOOP;
+    
+    IF sample_count > 2 AND field_magnitude > 0.1 THEN
+        interpretation_divergence := interpretation_divergence / sample_count;
+        consensus_divergence := consensus_divergence / sample_count;
+        
+        insular_decoupling_ratio := interpretation_divergence / field_magnitude;
+        
+        IF insular_decoupling_ratio > divergence_threshold THEN
+            decoupling_signature := insular_decoupling_ratio * consensus_divergence;
+            
+            RETURN QUERY SELECT 
+                'OPERATIVE_DECOUPLING'::TEXT,
+                LEAST(1.0, decoupling_signature),
+                ARRAY[interpretation_divergence, field_magnitude, insular_decoupling_ratio, consensus_divergence],
+                format(
+                    'Interpretation divergence: %s > %s * field magnitude: %s (ratio: %s)', 
+                    to_char(interpretation_divergence::numeric, 'FM999990.000'),
+                    to_char(divergence_threshold::numeric, 'FM999990.0'),
+                    to_char(field_magnitude::numeric, 'FM999990.000'),
+                    to_char(insular_decoupling_ratio::numeric, 'FM999990.000')
+                );
+        END IF;
+    END IF;
+    
+    RETURN;
+END;
+$$;
+
+-- Signal Projection
+
+-- Summary: Detect divergence between self interpretation and consensus normalized by field magnitude.
+-- Condition: (E_self_divergence / ||C||) > τ with adequate samples.
+-- Inputs:
+--   - point_id UUID — target point
+--   - divergence_threshold FLOAT — τ (default 0.5)
+--   - time_window INTERVAL — sample horizon (default '8 hours')
+-- Assumptions: Use latest non‑self coherence as baseline consensus; compare over active dimension.
+-- Numerical guards: Require ||C|| > 0.1 and >2 samples; use ε in ratios.
+-- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
+-- Severity scaling: severity = clip(ratio · consensus_divergence).
+CREATE OR REPLACE FUNCTION ricci.detect_signal_projection(
     point_id UUID,
     bias_threshold FLOAT DEFAULT 0.3,
     threat_hyperattractor_threshold FLOAT DEFAULT 0.8
@@ -96,7 +196,7 @@ BEGIN
             tension_signature := negative_interpretation_bias * threat_pattern_concentration;
             
             RETURN QUERY SELECT 
-                'METRIC_TENSION'::TEXT,
+                'SIGNAL_PROJECTION'::TEXT,
                 LEAST(1.0, tension_signature * 2.0),
                 ARRAY[negative_interpretation_bias, threat_pattern_concentration, interpretation_divergence, sample_count::FLOAT],
                 format(
@@ -112,108 +212,7 @@ BEGIN
 END;
 $$;
 
--- Metric Decoupling
-
--- Summary: Detect divergence between self interpretation and consensus normalized by field magnitude.
--- Condition: (E_self_divergence / ||C||) > τ with adequate samples.
--- Inputs:
---   - point_id UUID — target point
---   - divergence_threshold FLOAT — τ (default 0.5)
---   - time_window INTERVAL — sample horizon (default '8 hours')
--- Assumptions: Use latest non‑self coherence as baseline consensus; compare over active dimension.
--- Numerical guards: Require ||C|| > 0.1 and >2 samples; use ε in ratios.
--- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
--- Severity scaling: severity = clip(ratio · consensus_divergence).
-CREATE OR REPLACE FUNCTION ricci.detect_metric_decoupling(
-    point_id UUID,
-    divergence_threshold FLOAT DEFAULT 0.5,
-    time_window INTERVAL DEFAULT '8 hours'
-) RETURNS TABLE(
-    signature_type TEXT,
-    severity FLOAT,
-    geometric_signature FLOAT[],
-    mathematical_evidence TEXT
-) LANGUAGE plpgsql AS $$
-DECLARE
-    current_coherence VECTOR(2000);
-    user_fp TEXT;
-    
-    interpretation_divergence FLOAT := 0.0;
-    consensus_divergence FLOAT := 0.0;
-    field_magnitude FLOAT;
-    insular_decoupling_ratio FLOAT;
-    decoupling_signature FLOAT;
-    
-    baseline_coherence VECTOR(2000);
-    sample_count INTEGER := 0;
-    
-    rec RECORD;
-BEGIN
-    SELECT mp.coherence_field, mp.user_fingerprint
-    INTO current_coherence, user_fp
-    FROM ricci.manifold_points mp WHERE mp.id = point_id;
-    
-    IF current_coherence IS NULL OR user_fp IS NULL THEN
-        RETURN;
-    END IF;
-    
-    field_magnitude := COALESCE(
-        (SELECT coherence_magnitude FROM ricci.manifold_points WHERE id = point_id),
-        CASE WHEN current_coherence IS NOT NULL THEN COALESCE(ricci.vector_l2_norm(current_coherence), 0.0) ELSE 0.0 END
-    );
-    
-    -- Baseline latest consensus sample
-    SELECT mp.coherence_field INTO baseline_coherence
-    FROM ricci.manifold_points mp
-    WHERE mp.user_fingerprint != user_fp
-    ORDER BY mp.creation_timestamp DESC LIMIT 1;
-    
-    IF baseline_coherence IS NULL THEN
-        RETURN;
-    END IF;
-    
-    FOR rec IN (
-        SELECT coherence_field
-        FROM ricci.manifold_points mp
-        WHERE mp.user_fingerprint = user_fp
-        ORDER BY mp.creation_timestamp DESC LIMIT 10
-    ) LOOP
-        sample_count := sample_count + 1;
-        
-        interpretation_divergence := interpretation_divergence + 
-            ricci.vector_l2_distance_first_n(rec.coherence_field, current_coherence, ricci.get_active_dimension());
-        consensus_divergence := consensus_divergence + 
-            ricci.vector_l2_distance_first_n(rec.coherence_field, baseline_coherence, ricci.get_active_dimension());
-    END LOOP;
-    
-    IF sample_count > 2 AND field_magnitude > 0.1 THEN
-        interpretation_divergence := interpretation_divergence / sample_count;
-        consensus_divergence := consensus_divergence / sample_count;
-        
-        insular_decoupling_ratio := interpretation_divergence / field_magnitude;
-        
-        IF insular_decoupling_ratio > divergence_threshold THEN
-            decoupling_signature := insular_decoupling_ratio * consensus_divergence;
-            
-            RETURN QUERY SELECT 
-                'METRIC_DECOUPLING'::TEXT,
-                LEAST(1.0, decoupling_signature),
-                ARRAY[interpretation_divergence, field_magnitude, insular_decoupling_ratio, consensus_divergence],
-                format(
-                    'Interpretation divergence: %s > %s * field magnitude: %s (ratio: %s)', 
-                    to_char(interpretation_divergence::numeric, 'FM999990.000'),
-                    to_char(divergence_threshold::numeric, 'FM999990.0'),
-                    to_char(field_magnitude::numeric, 'FM999990.000'),
-                    to_char(insular_decoupling_ratio::numeric, 'FM999990.000')
-                );
-        END IF;
-    END IF;
-    
-    RETURN;
-END;
-$$;
-
--- Metric Hypercoupling
+-- Recursive Hypercoupling
 
 -- Summary: Detect dominance of self‑coupling over total coupling mass with weak external references.
 -- Condition: (self_coupling/total) > τ ∧ (external/total) < θ with sufficient references.
@@ -225,7 +224,7 @@ $$;
 -- Numerical guards: Require >3 references; clip severity to [0,1].
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
 -- Severity scaling: severity = clip((self/total) · (1 − external/total)).
-CREATE OR REPLACE FUNCTION ricci.detect_metric_hypercoupling(
+CREATE OR REPLACE FUNCTION ricci.detect_recursive_hypercoupling(
     point_id UUID,
     self_coupling_threshold FLOAT DEFAULT 0.8,
     external_reference_threshold FLOAT DEFAULT 0.2
@@ -285,7 +284,7 @@ BEGIN
             hypercoupling_signature := hypercoupling_ratio * (1.0 - external_coupling_strength / total_coupling_strength);
             
             RETURN QUERY SELECT 
-                'METRIC_HYPERCOUPLING'::TEXT,
+                'RECURSIVE_HYPERCOUPLING'::TEXT,
                 LEAST(1.0, hypercoupling_signature),
                 ARRAY[self_coupling_strength, external_coupling_strength, hypercoupling_ratio, (self_reference_count + external_reference_count)::FLOAT],
                 format(
@@ -311,9 +310,9 @@ CREATE OR REPLACE FUNCTION ricci.detect_coupling_signatures(
     mathematical_evidence TEXT
 ) LANGUAGE plpgsql AS $$
 BEGIN
-    RETURN QUERY SELECT * FROM ricci.detect_metric_decoupling(point_id);
-    RETURN QUERY SELECT * FROM ricci.detect_metric_tension(point_id);
-    RETURN QUERY SELECT * FROM ricci.detect_metric_hypercoupling(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_operative_decoupling(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_signal_projection(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_recursive_hypercoupling(point_id);
     RETURN;
 END;
 $$;  
