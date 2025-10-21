@@ -185,7 +185,7 @@ SELECT * FROM ricci.detect_all_signatures(point_id);
 SELECT signature_type, AVG(severity) as avg_severity
 FROM ricci.manifold_points mp
 CROSS JOIN LATERAL ricci.detect_all_signatures(mp.id)
-WHERE conversation_id = 'conversation-123'
+WHERE conversation_id = '550e8400-e29b-41d4-a716-446655440000'
 GROUP BY signature_type
 HAVING AVG(severity) > 0.5;
 ```
@@ -237,7 +237,7 @@ Understand why a project failed by analyzing existing communication geometry
 SELECT signature_type, severity, creation_timestamp 
 FROM ricci.manifold_points mp
 CROSS JOIN LATERAL ricci.detect_all_signatures(mp.id)
-WHERE conversation_id = 'failed-project-x'
+WHERE conversation_id = '8b1e7a30-1f3a-4b8a-9b9e-1a2b3c4d5e6f'
 ORDER BY creation_timestamp;
 ```
 
@@ -261,7 +261,7 @@ Forecast when discussions will spiral based on field dynamics
 -- Get intervention urgency scores
 SELECT * FROM ricci.detect_escalation_via_field_evolution(
     ARRAY(SELECT id FROM ricci.manifold_points 
-          WHERE conversation_id = 'active-debate'
+          WHERE conversation_id = 'a3dcb4d2-6f1a-4a3e-9fb7-9c4ad5b6e7f8'
           ORDER BY creation_timestamp)
 );
 ```
