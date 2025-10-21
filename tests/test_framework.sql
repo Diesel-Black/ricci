@@ -248,6 +248,8 @@ DECLARE
     point_id UUID;
     default_semantic VECTOR(2000);
     default_coherence VECTOR(2000);
+    effective_user_fingerprint UUID;
+    raw_hex TEXT;
 BEGIN
     point_id := gen_random_uuid();
     
@@ -271,12 +273,24 @@ BEGIN
         default_coherence := test_coherence_field;
     END IF;
     
+    -- Normalize provided fingerprint into reserved test namespace so cleanup can remove it
+    IF test_user_fingerprint IS NULL THEN
+        effective_user_fingerprint := '00000000-0000-0000-0000-000000000001';
+    ELSIF test_user_fingerprint::text LIKE '00000000-0000-0000-0000-%' THEN
+        effective_user_fingerprint := test_user_fingerprint;
+    ELSE
+        raw_hex := replace(test_user_fingerprint::text, '-', '');
+        effective_user_fingerprint := (
+            '00000000-0000-0000-0000-' || right(raw_hex, 12)
+        )::uuid;
+    END IF;
+
     INSERT INTO ricci.manifold_points (
         id, user_fingerprint, creation_timestamp,
         semantic_field, coherence_field, coherence_magnitude,
         recursive_depth, constraint_density, attractor_stability
     ) VALUES (
-        point_id, test_user_fingerprint, NOW(),
+        point_id, effective_user_fingerprint, NOW(),
         default_semantic,
         default_coherence,
         0.5 + random() * 0.5,  -- C_mag between 0.5-1.0
