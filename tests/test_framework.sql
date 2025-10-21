@@ -242,7 +242,7 @@ $$;
 CREATE OR REPLACE FUNCTION ricci_test.create_test_manifold_point(
     test_semantic_field VECTOR(2000) DEFAULT NULL,
     test_coherence_field VECTOR(2000) DEFAULT NULL,
-    test_user_fingerprint TEXT DEFAULT 'test_user'
+    test_user_fingerprint UUID DEFAULT '00000000-0000-0000-0000-000000000001'
 ) RETURNS UUID LANGUAGE plpgsql AS $$
 DECLARE
     point_id UUID;
@@ -290,16 +290,16 @@ END;
 $$;
 
 -- Purpose: Delete test artifacts created via create_test_manifold_point.
--- Method: gather ids with user_fingerprint LIKE 'test_%'; delete child rows first, then parents.
+-- Method: gather ids with test user_fingerprint pattern; delete child rows first, then parents.
 CREATE OR REPLACE FUNCTION ricci_test.cleanup_test_data()
 RETURNS void LANGUAGE plpgsql AS $$
 DECLARE
     test_point_ids UUID[];
 BEGIN
-    -- Capture test point ids
+    -- Capture test point ids (test UUIDs start with all zeros)
     SELECT array_agg(id) INTO test_point_ids
     FROM ricci.manifold_points 
-    WHERE user_fingerprint LIKE 'test_%';
+    WHERE user_fingerprint::text LIKE '00000000-0000-0000-0000-%';
 
     IF test_point_ids IS NULL OR array_length(test_point_ids, 1) IS NULL THEN
         RETURN;

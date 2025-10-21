@@ -28,7 +28,7 @@ CREATE SCHEMA IF NOT EXISTS ricci;
 CREATE TABLE IF NOT EXISTS ricci.manifold_points (
     id UUID PRIMARY KEY,
     conversation_id UUID,
-    user_fingerprint TEXT,
+    user_fingerprint UUID,
     creation_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
     
     -- Define semantic/coherence vectors

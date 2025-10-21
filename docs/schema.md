@@ -37,7 +37,7 @@ The primary table storing semantic manifold points with geometric properties.
 CREATE TABLE ricci.manifold_points (
     id UUID PRIMARY KEY,
     conversation_id UUID,
-    user_fingerprint TEXT,
+    user_fingerprint UUID,
     creation_timestamp TIMESTAMP WITH TIME ZONE NOT NULL,
     
     -- Semantic field vectors
@@ -68,7 +68,7 @@ CREATE TABLE ricci.manifold_points (
 
 - `id` — Unique identifier for the manifold point
 - `conversation_id` — Optional grouping identifier for related points (e.g., conversation threads)
-- `user_fingerprint` — Optional identifier for the actor/user (should be pseudonymized)
+- `user_fingerprint` — UUID identifier for the actor/user (type-enforced privacy, no PII storage)
 - `creation_timestamp` — When the source observation occurred
 - `semantic_field` — Primary 2000-dimensional semantic embedding
 - `coherence_field` — 2000-dimensional coherence field embedding
