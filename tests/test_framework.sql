@@ -281,7 +281,7 @@ BEGIN
     ELSE
         raw_hex := replace(test_user_fingerprint::text, '-', '');
         effective_user_fingerprint := (
-            '00000000-0000-0000-0000-' || right(raw_hex, 12)
+            '00000000-0000-0000-0000-' || right(raw_hex, 24)
         )::uuid;
     END IF;
 
