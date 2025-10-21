@@ -242,12 +242,14 @@ $$;
 CREATE OR REPLACE FUNCTION ricci_test.create_test_manifold_point(
     test_semantic_field VECTOR(2000) DEFAULT NULL,
     test_coherence_field VECTOR(2000) DEFAULT NULL,
-    test_user_fingerprint TEXT DEFAULT 'test_user'
+    test_user_fingerprint UUID DEFAULT '00000000-0000-0000-0000-000000000001'
 ) RETURNS UUID LANGUAGE plpgsql AS $$
 DECLARE
     point_id UUID;
     default_semantic VECTOR(2000);
     default_coherence VECTOR(2000);
+    effective_user_fingerprint UUID;
+    raw_hex TEXT;
 BEGIN
     point_id := gen_random_uuid();
     
@@ -271,12 +273,24 @@ BEGIN
         default_coherence := test_coherence_field;
     END IF;
     
+    -- Normalize provided fingerprint into reserved test namespace so cleanup can remove it
+    IF test_user_fingerprint IS NULL THEN
+        effective_user_fingerprint := '00000000-0000-0000-0000-000000000001';
+    ELSIF test_user_fingerprint::text LIKE '00000000-0000-0000-0000-%' THEN
+        effective_user_fingerprint := test_user_fingerprint;
+    ELSE
+        raw_hex := replace(test_user_fingerprint::text, '-', '');
+        effective_user_fingerprint := (
+            '00000000-0000-0000-0000-' || right(raw_hex, 12)
+        )::uuid;
+    END IF;
+
     INSERT INTO ricci.manifold_points (
         id, user_fingerprint, creation_timestamp,
         semantic_field, coherence_field, coherence_magnitude,
         recursive_depth, constraint_density, attractor_stability
     ) VALUES (
-        point_id, test_user_fingerprint, NOW(),
+        point_id, effective_user_fingerprint, NOW(),
         default_semantic,
         default_coherence,
         0.5 + random() * 0.5,  -- C_mag between 0.5-1.0
@@ -290,16 +304,17 @@ END;
 $$;
 
 -- Purpose: Delete test artifacts created via create_test_manifold_point.
--- Method: gather ids with user_fingerprint LIKE 'test_%'; delete child rows first, then parents.
+-- Method: gather ids with test user_fingerprint pattern; delete child rows first, then parents.
 CREATE OR REPLACE FUNCTION ricci_test.cleanup_test_data()
 RETURNS void LANGUAGE plpgsql AS $$
 DECLARE
     test_point_ids UUID[];
 BEGIN
-    -- Capture test point ids
+    -- Capture test point ids (test UUIDs start with all zeros)
     SELECT array_agg(id) INTO test_point_ids
     FROM ricci.manifold_points 
-    WHERE user_fingerprint LIKE 'test_%';
+    WHERE user_fingerprint >= '00000000-0000-0000-0000-000000000000'::uuid
+      AND user_fingerprint <  '00000001-0000-0000-0000-000000000000'::uuid;
 
     IF test_point_ids IS NULL OR array_length(test_point_ids, 1) IS NULL THEN
         RETURN;
