@@ -33,7 +33,7 @@ RICCI is a Postgres‑native geometric analysis library for detecting structural
 
 - Core analysis:
   - `ricci.detect_all_signatures(point_id UUID)`
-  - Category multiplexers: `detect_rigidity_signatures`, `detect_fragmentation_signatures`, `detect_inflation_signatures`, `detect_coupling_signatures`
+  - Category multiplexers: `detect_rigidity_signatures`, `detect_fragmentation_signatures`, `detect_inflation_signatures`, `detect_distortion_signatures`
 - Operations and monitoring:
   - `ricci.detect_coordination_via_coupling(time_window, coupling_threshold, min_cluster_size)`
   - `ricci.detect_escalation_via_field_evolution(conversation_points UUID[])`
