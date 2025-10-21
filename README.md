@@ -33,7 +33,7 @@ Running entirely in PostgreSQL+pgvector, RICCI performs geometric analysis direc
 
 Most importantly, every detection produces mathematical evidence showing exactly which thresholds were crossed and why. This finds use in real-time analysis, and for post-mortem case studies of past failures.
 
-## What RICCI Doesn't Do
+## What RICCI Doesn't
 
 Functioning like a semantic MRI, RICCI excels at detecting the *mathematical signatures of pathologies* in semantic point patterns that threaten systemic health in complex communication environments.
 
