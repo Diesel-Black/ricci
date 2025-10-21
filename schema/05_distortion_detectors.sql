@@ -301,7 +301,7 @@ END;
 $$;
 
 -- Combined coupling model
-CREATE OR REPLACE FUNCTION ricci.detect_coupling_signatures(
+CREATE OR REPLACE FUNCTION ricci.detect_distortion_signatures(
     point_id UUID
 ) RETURNS TABLE(
     signature_type TEXT,

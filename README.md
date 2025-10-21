@@ -54,7 +54,7 @@ Four categories emit rows with `(signature_type, severity, evidence)`:
 - Rigidity: metric crystallization, densification, sequestration
 - Fragmentation: dissociation, dissolution, dispersion
 - Inflation: hyperasymmetry, hypercoherence, hyperexpansion
-- Coupling: decoupling, tension, hypercoupling
+- Distortion: operative decoupling, signal projection, recursive hypercoupling
 
 Equations and details: see `docs/schema.md`.
 
@@ -141,7 +141,7 @@ SELECT * FROM ricci.detect_all_signatures(point_id);
 SELECT * FROM ricci.detect_rigidity_signatures(point_id);
 SELECT * FROM ricci.detect_fragmentation_signatures(point_id);
 SELECT * FROM ricci.detect_inflation_signatures(point_id);
-SELECT * FROM ricci.detect_coupling_signatures(point_id);
+SELECT * FROM ricci.detect_distortion_signatures(point_id);
 ```
 
 ### Investigative Analysis

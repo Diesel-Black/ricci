@@ -65,7 +65,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'distortion_signatures_combined',
-        format('SELECT * FROM ricci.detect_coupling_signatures(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_distortion_signatures(''%s'')', test_point),
         'distortion'
     );
     
@@ -96,7 +96,7 @@ BEGIN
     FROM ricci.manifold_points WHERE id != test_point LIMIT 1;
 
     -- Assert at least one coupling signature row is returned (non-zero count)
-    SELECT COUNT(*) INTO result_count FROM ricci.detect_coupling_signatures(test_point);
+    SELECT COUNT(*) INTO result_count FROM ricci.detect_distortion_signatures(test_point);
     PERFORM ricci_test.assert_true(
         'distortion_signatures_present',
         result_count > 0,
@@ -105,7 +105,7 @@ BEGIN
     );
 
     FOR signature_rec IN 
-        SELECT * FROM ricci.detect_coupling_signatures(test_point)
+        SELECT * FROM ricci.detect_distortion_signatures(test_point)
     LOOP
         PERFORM ricci_test.assert_true(
             'distortion_signature_type_valid',
@@ -135,7 +135,7 @@ BEGIN
     
     PERFORM ricci_test.assert_performance(
         'distortion_signatures_performance',
-        format('SELECT * FROM ricci.detect_coupling_signatures(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_distortion_signatures(''%s'')', test_point),
         '3 seconds',
         'distortion'
     );

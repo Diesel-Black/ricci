@@ -77,8 +77,8 @@ BEGIN
     );
     
     PERFORM ricci_test.assert_performance(
-        'coupling_signatures_performance_realistic',
-        format('SELECT * FROM ricci.detect_coupling_signatures(''%s'')', test_point),
+        'distortion_signatures_performance_realistic',
+        format('SELECT * FROM ricci.detect_distortion_signatures(''%s'')', test_point),
         '5 seconds',
         'performance'
     );

@@ -559,7 +559,7 @@ Runs all 12 signature detection functions for a given point.
 ricci.detect_rigidity_signatures(point_id UUID)
 ricci.detect_fragmentation_signatures(point_id UUID)
 ricci.detect_inflation_signatures(point_id UUID)
-ricci.detect_coupling_signatures(point_id UUID)
+ricci.detect_distortion_signatures(point_id UUID)
 ```
 
 Run signature detection for specific categories.
