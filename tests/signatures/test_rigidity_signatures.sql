@@ -5,7 +5,7 @@
 -- Copyright 2025 Inside The Black Box LLC
 -- Licensed under MIT License
 
-\echo 'Rigidity: metric sequestration → high stability + high coherence should yield detection'
+\echo 'Rigidity: attractor isolation → high stability + high coherence should yield detection'
 
 DO $$
 DECLARE
@@ -15,7 +15,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_sequestration_executes',
-        format('SELECT * FROM ricci.detect_metric_sequestration(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_attractor_isolation(''%s'')', test_point),
         'rigidity'
     );
     
@@ -23,7 +23,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Rigidity: metric densification → recent low response under pressure should be detectable (executes)'
+\echo 'Rigidity: field calcification → recent low response under pressure should be detectable (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -32,7 +32,7 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_densification_executes',
-        format('SELECT * FROM ricci.detect_metric_densification(''%s'')', test_point),
+        format('SELECT * FROM ricci.detect_field_calcification(''%s'')', test_point),
         'rigidity'
     );
     
@@ -40,7 +40,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Rigidity: metric crystallization → slow metric evolution with nonzero curvature (executes)'
+\echo 'Rigidity: Metric Crystallization → slow metric evolution with nonzero curvature (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -94,7 +94,7 @@ BEGIN
     
     -- Assert at least one detection row exists under high-stability/high-coherence conditions
     SELECT COUNT(*) INTO result_count
-    FROM ricci.detect_metric_sequestration(test_point, 0.8, 3.0);
+    FROM ricci.detect_attractor_isolation(test_point, 0.8, 3.0);
     PERFORM ricci_test.assert_true(
         'metric_sequestration_detection_present',
         result_count > 0,
@@ -104,15 +104,15 @@ BEGIN
 
     -- Check if detection returns proper format
     FOR signature_rec IN 
-        SELECT * FROM ricci.detect_metric_sequestration(test_point, 0.8, 3.0)
+        SELECT * FROM ricci.detect_attractor_isolation(test_point, 0.8, 3.0)
     LOOP
         found_signature := true;
         
         PERFORM ricci_test.assert_true(
             'metric_sequestration_signature_type',
-            signature_rec.signature_type = 'METRIC_SEQUESTRATION',
+            signature_rec.signature_type = 'ATTRACTOR_ISOLATION',
             'rigidity',
-            'Signature type should be METRIC_SEQUESTRATION'
+            'Signature type should be ATTRACTOR_ISOLATION'
         );
         
         PERFORM ricci_test.assert_true(
@@ -146,14 +146,14 @@ $$;
 \echo 'Rigidity: null point handling → executes without error'
 SELECT ricci_test.assert_no_error(
     'rigidity_signatures_null_point',
-    'SELECT * FROM ricci.detect_metric_sequestration(NULL)',
+    'SELECT * FROM ricci.detect_attractor_isolation(NULL)',
     'rigidity'
 );
 
 \echo 'Rigidity: nonexistent point handling → executes without error'
 SELECT ricci_test.assert_no_error(
     'rigidity_signatures_nonexistent_point',
-    format('SELECT * FROM ricci.detect_metric_sequestration(''%s'')', gen_random_uuid()),
+    format('SELECT * FROM ricci.detect_attractor_isolation(''%s'')', gen_random_uuid()),
     'rigidity'
 );
 
@@ -172,7 +172,7 @@ BEGIN
     WHERE id = test_point;
     
     SELECT COUNT(*) INTO result_count
-    FROM ricci.detect_metric_sequestration(test_point, 0.8, 3.0);
+    FROM ricci.detect_attractor_isolation(test_point, 0.8, 3.0);
     
     PERFORM ricci_test.assert_true(
         'metric_sequestration_boundary_threshold',
@@ -230,11 +230,11 @@ BEGIN
     
     -- Get severities (if any detections occur)
     SELECT severity INTO severity_low
-    FROM ricci.detect_metric_sequestration(test_point_low) 
+    FROM ricci.detect_attractor_isolation(test_point_low) 
     LIMIT 1;
     
     SELECT severity INTO severity_high
-    FROM ricci.detect_metric_sequestration(test_point_high)
+    FROM ricci.detect_attractor_isolation(test_point_high)
     LIMIT 1;
     
     -- If both detected, higher values should generally produce higher severity

@@ -1,11 +1,11 @@
--- RICCI: Test Coupling Signature Detection
--- File: tests/signatures/test_coupling_signatures.sql
+-- RICCI: Test Distortion Signature Detection
+-- File: tests/signatures/test_distortion_signatures.sql
 --
--- Tests for coupling signature detection functions
+-- Tests for distortion signature detection functions
 -- Copyright 2025 Inside The Black Box LLC
 -- Licensed under MIT License
 
-\echo 'Coupling: metric tension → negative bias + concentrated threat patterns (executes)'
+\echo 'Distortion: signal projection → negative bias + concentrated threat patterns (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -14,15 +14,15 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_tension_executes',
-        format('SELECT * FROM ricci.detect_metric_tension(''%s'')', test_point),
-        'coupling'
+        format('SELECT * FROM ricci.detect_signal_projection(''%s'')', test_point),
+        'distortion'
     );
     
     PERFORM ricci_test.cleanup_test_data();
 END;
 $$;
 
-\echo 'Coupling: metric decoupling → interpretation divergence exceeds threshold (executes)'
+\echo 'Distortion: operative decoupling → interpretation divergence exceeds threshold (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -31,15 +31,15 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_decoupling_executes',
-        format('SELECT * FROM ricci.detect_metric_decoupling(''%s'')', test_point),
-        'coupling'
+        format('SELECT * FROM ricci.detect_operative_decoupling(''%s'')', test_point),
+        'distortion'
     );
     
     PERFORM ricci_test.cleanup_test_data();
 END;
 $$;
 
-\echo 'Coupling: metric hypercoupling → dominant self-coupling with weak externals (executes)'
+\echo 'Distortion: recursive hypercoupling → dominant self-coupling with weak externals (executes)'
 DO $$
 DECLARE
     test_point UUID;
@@ -48,15 +48,15 @@ BEGIN
     
     PERFORM ricci_test.assert_no_error(
         'metric_hypercoupling_executes',
-        format('SELECT * FROM ricci.detect_metric_hypercoupling(''%s'')', test_point),
-        'coupling'
+        format('SELECT * FROM ricci.detect_recursive_hypercoupling(''%s'')', test_point),
+        'distortion'
     );
     
     PERFORM ricci_test.cleanup_test_data();
 END;
 $$;
 
-\echo 'Coupling: combined signatures → multiplexed detector executes'
+\echo 'Distortion: combined signatures → multiplexed detector executes'
 DO $$
 DECLARE
     test_point UUID;
@@ -64,16 +64,16 @@ BEGIN
     test_point := ricci_test.create_test_manifold_point();
     
     PERFORM ricci_test.assert_no_error(
-        'coupling_signatures_combined',
-        format('SELECT * FROM ricci.detect_coupling_signatures(''%s'')', test_point),
-        'coupling'
+        'distortion_signatures_combined',
+        format('SELECT * FROM ricci.detect_distortion_signatures(''%s'')', test_point),
+        'distortion'
     );
     
     PERFORM ricci_test.cleanup_test_data();
 END;
 $$;
 
-\echo 'Coupling: schema verification → expect at least one valid row with type/severity/evidence under dominant self-coupling'
+\echo 'Distortion: schema verification → expect at least one valid row with type/severity/evidence under dominant self-coupling'
 DO $$
 DECLARE
     test_point UUID;
@@ -96,28 +96,28 @@ BEGIN
     FROM ricci.manifold_points WHERE id != test_point LIMIT 1;
 
     -- Assert at least one coupling signature row is returned (non-zero count)
-    SELECT COUNT(*) INTO result_count FROM ricci.detect_coupling_signatures(test_point);
+    SELECT COUNT(*) INTO result_count FROM ricci.detect_distortion_signatures(test_point);
     PERFORM ricci_test.assert_true(
-        'coupling_signatures_present',
+        'distortion_signatures_present',
         result_count > 0,
-        'coupling',
-        'At least one coupling signature should be detected with dominant self-coupling and minimal external references'
+        'distortion',
+        'At least one distortion signature should be detected with dominant self-coupling and minimal external references'
     );
 
     FOR signature_rec IN 
-        SELECT * FROM ricci.detect_coupling_signatures(test_point)
+        SELECT * FROM ricci.detect_distortion_signatures(test_point)
     LOOP
         PERFORM ricci_test.assert_true(
-            'coupling_signature_type_valid',
-            signature_rec.signature_type IN ('METRIC_TENSION', 'METRIC_DECOUPLING', 'METRIC_HYPERCOUPLING'),
-            'coupling',
-            'Signature type should be valid coupling type'
+            'distortion_signature_type_valid',
+            signature_rec.signature_type IN ('SIGNAL_PROJECTION', 'OPERATIVE_DECOUPLING', 'RECURSIVE_HYPERCOUPLING'),
+            'distortion',
+            'Signature type should be valid distortion type'
         );
         
         PERFORM ricci_test.assert_true(
-            'coupling_severity_range',
+            'distortion_severity_range',
             signature_rec.severity >= 0.0 AND signature_rec.severity <= 1.0,
-            'coupling',
+            'distortion',
             'Severity should be between 0.0 and 1.0'
         );
     END LOOP;
@@ -126,7 +126,7 @@ BEGIN
 END;
 $$;
 
-\echo 'Coupling: performance → combined detector ≤ 3s'
+\echo 'Distortion: performance → combined detector ≤ 3s'
 DO $$
 DECLARE
     test_point UUID;
@@ -134,10 +134,10 @@ BEGIN
     test_point := ricci_test.create_test_manifold_point();
     
     PERFORM ricci_test.assert_performance(
-        'coupling_signatures_performance',
-        format('SELECT * FROM ricci.detect_coupling_signatures(''%s'')', test_point),
+        'distortion_signatures_performance',
+        format('SELECT * FROM ricci.detect_distortion_signatures(''%s'')', test_point),
         '3 seconds',
-        'coupling'
+        'distortion'
     );
     
     PERFORM ricci_test.cleanup_test_data();
@@ -145,4 +145,4 @@ END;
 $$;
 
 \echo ''
-\echo 'Completed coupling signature tests.'
+\echo 'Completed distortion signature tests.'

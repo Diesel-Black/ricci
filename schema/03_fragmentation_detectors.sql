@@ -9,14 +9,14 @@
 
 -- Purpose: Detect under‑constraint failure modes where coherence disperses.
 -- Exposes:
---   - Detect Metric Dissociation: attractor proliferation vs generative capacity
---   - Detect Metric Dissolution: gradient dominates magnitude with positive acceleration
---   - Detect Metric Dispersion: coupling decay without compensatory sapience
+--   - Detect Attractor Dissociation: attractor proliferation vs generative capacity
+--   - Detect Field Dissolution: gradient dominates magnitude with positive acceleration
+--   - Detect Coupling Dispersion: coupling decay without compensatory sapience
 -- Conventions:
 --   - Return tables include (signature_type, severity ∈ [0,1], geometric_signature[], mathematical_evidence)
 --   - Active dimension n=100; use stored coherence_magnitude when present
 
--- Metric Dissociation
+-- Attractor Dissociation
 
 -- Summary: Detect proliferation of attractor directions beyond stabilization capacity.
 -- Condition: attractor_generation_rate / autopoietic_generation_rate > τ.
@@ -28,7 +28,7 @@
 -- Numerical guards: Use stored C_mag else compute; avoid division by zero when Φ(C)=0.
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
 -- Severity scaling: severity = clip((rate ratio)/10).
-CREATE OR REPLACE FUNCTION ricci.detect_metric_dissociation(
+CREATE OR REPLACE FUNCTION ricci.detect_attractor_dissociation(
     point_id UUID,
     splintering_threshold FLOAT DEFAULT 2.0,
     time_window INTERVAL DEFAULT '2 hours'
@@ -105,7 +105,7 @@ BEGIN
         
         IF splintering_ratio > splintering_threshold THEN
             RETURN QUERY SELECT 
-                'METRIC_DISSOCIATION'::TEXT,
+                'ATTRACTOR_DISSOCIATION'::TEXT,
                 LEAST(1.0, splintering_ratio / 10.0),
                 ARRAY[attractor_generation_rate, autopoietic_generation_rate, direction_variance, unique_directions::FLOAT],
                 format(
@@ -122,7 +122,7 @@ BEGIN
 END;
 $$;
 
--- Metric Dissolution
+-- Field Dissolution
 
 -- Summary: Detect unstable growth of coherence gradients relative to magnitude with positive acceleration.
 -- Condition: ||∇C|| > τ · ||C|| ∧ d²C/dt² > 0.
@@ -134,7 +134,7 @@ $$;
 -- Numerical guards: Use ε=1e-10 in ratios; skip NULL derivatives gracefully.
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
 -- Severity scaling: severity = clip((||∇C||/(||C||+ε))/10).
-CREATE OR REPLACE FUNCTION ricci.detect_metric_dissolution(
+CREATE OR REPLACE FUNCTION ricci.detect_field_dissolution(
     point_id UUID,
     gradient_ratio_threshold FLOAT DEFAULT 3.0,
     acceleration_threshold FLOAT DEFAULT 0.0
@@ -184,7 +184,7 @@ BEGIN
             dissolution_signature := coherence_gradient_norm / (coherence_mag + 1e-10);
             
             RETURN QUERY SELECT 
-                'METRIC_DISSOLUTION'::TEXT,
+                'FIELD_DISSOLUTION'::TEXT,
                 LEAST(1.0, dissolution_signature / 10.0),
                 ARRAY[coherence_gradient_norm, coherence_mag, coherence_acceleration],
                 format(
@@ -201,7 +201,7 @@ BEGIN
 END;
 $$;
 
--- Metric Dispersion
+-- Coupling Dispersion
 
 -- Summary: Detect decreasing coupling strength without compensatory sapience.
 -- Condition: coupling_decay_rate < θ ∧ compensatory_sapience < τ.
@@ -213,7 +213,7 @@ $$;
 -- Numerical guards: Require >1 sample; use absolute values in severity.
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
 -- Severity scaling: severity = clip(|decay| · (1−compensation) · 10).
-CREATE OR REPLACE FUNCTION ricci.detect_metric_dispersion(
+CREATE OR REPLACE FUNCTION ricci.detect_coupling_dispersion(
     point_id UUID,
     decay_threshold FLOAT DEFAULT -0.1,
     sapience_compensation_threshold FLOAT DEFAULT 0.3
@@ -238,7 +238,7 @@ BEGIN
     SELECT sf.sapience_value, sf.circumspection_factor
     INTO current_sapience, circumspection_factor
     FROM ricci.sapience_field sf
-    WHERE sf.point_id = detect_metric_dispersion.point_id
+    WHERE sf.point_id = detect_coupling_dispersion.point_id
     ORDER BY sf.computed_at DESC LIMIT 1;
     
     FOR rec IN (
@@ -269,7 +269,7 @@ BEGIN
             decay_severity := abs(coupling_decay_rate) * (1.0 - compensatory_sapience);
             
             RETURN QUERY SELECT 
-                'METRIC_DISPERSION'::TEXT,
+                'COUPLING_DISPERSION'::TEXT,
                 LEAST(1.0, decay_severity * 10.0),
                 ARRAY[coupling_decay_rate, avg_coupling_strength, compensatory_sapience, sample_count::FLOAT],
                 format(
@@ -295,9 +295,9 @@ CREATE OR REPLACE FUNCTION ricci.detect_fragmentation_signatures(
     mathematical_evidence TEXT
 ) LANGUAGE plpgsql AS $$
 BEGIN
-    RETURN QUERY SELECT * FROM ricci.detect_metric_dissociation(point_id);
-    RETURN QUERY SELECT * FROM ricci.detect_metric_dissolution(point_id);
-    RETURN QUERY SELECT * FROM ricci.detect_metric_dispersion(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_attractor_dissociation(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_field_dissolution(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_coupling_dispersion(point_id);
     RETURN;
 END;
 $$;

@@ -323,7 +323,7 @@ BEGIN
     RETURN QUERY SELECT * FROM ricci.detect_rigidity_signatures(point_id);
     RETURN QUERY SELECT * FROM ricci.detect_fragmentation_signatures(point_id);
     RETURN QUERY SELECT * FROM ricci.detect_inflation_signatures(point_id);
-    RETURN QUERY SELECT * FROM ricci.detect_coupling_signatures(point_id);
+    RETURN QUERY SELECT * FROM ricci.detect_distortion_signatures(point_id);
     RETURN;
 END;
 $$;
