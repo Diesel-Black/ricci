@@ -9,10 +9,12 @@ This question follows every preventable organizational catastrophe. Teams often 
 
 Organizational dysfunction follows one or more of 12 geometric patterns that repeat at scales from individual conversations, to inter-team dynamics, to full systemic communication health.
 
-RICCI identifies these signatures before they destroy value. Its 12 orthogonal detectors measure field dynamics in real-time, each producing traceable, mathematical evidence showing which geometric thresholds were crossed and why.
+RICCI identifies these signatures before they destroy value and competitive advantage. Its 12 orthogonal detectors measure field dynamics in real-time, each producing traceable, mathematical evidence showing which geometric thresholds were crossed and why.
 
 ## Table of Contents
-- [What RICCI Does](#what-ricci-does) / [What RICCI Doesn't](#what-ricci-does-not-do)
+- [What RICCI Does](#what-ricci-does)
+- [Scope & Limitations](#scope--limitations)
+- [Key Concepts](#key-concepts)
 - [Privacy Considerations](#privacy-considerations)
 - [The Twelve Detectors](#the-twelve-detectors)
 - [Why Geometry?](#why-geometry)
@@ -27,47 +29,80 @@ RICCI identifies these signatures before they destroy value. Its 12 orthogonal d
 
 ## What RICCI Does
 
-An ounce of prevention is worth a metric ton of cure. In ninety-seven kilobytes of SQL, RICCI detects and scores the semantic, geometric signatures of preventable problems long before they balloon into crises and disasters that destroy value, by measuring the geometry of interaction dynamics in real-time. 
+An ounce of prevention is worth a metric ton of cure. RICCI is a "semantic MRI" for complex communication systems, detecting the mathematical signatures of pathologies in semantic point patterns that threaten systemic health long before they can become disastrous money pits or rework nightmares.
 
-Running entirely in PostgreSQL+pgvector, RICCI performs geometric analysis directly in the database with colocated vectors and tensors. It requires no external services, incorporates no ML models, and has no cloud dependencies. You provide embeddings, RICCI provides in-depth analysis of their geometric field configurations and evolution.
+Think of it as "weather forecasting for organizational discourse". Just as meteorologists track pressure systems and temperature gradients to predict storms, RICCI tracks semantic field dynamics and coupling patterns to predict breakdowns in the *process* before any resulting dysfunction costs money.
 
-Most importantly, every detection produces mathematical evidence showing exactly which thresholds were crossed and why. This finds use in real-time analysis, and for post-mortem case studies of past failures.
+Or consider "seismometers", which listen for signs of earthquakes in 3 dimensions. RICCI quantifies real-time geometric stress on semantic fault lines—and how things are actively shifting—with 2000 dimensions of resolution.
 
-## What RICCI Doesn't
+### How It Works
 
-Functioning like a semantic MRI, RICCI excels at detecting the *mathematical signatures of pathologies* in semantic point patterns that threaten systemic health in complex communication environments.
+In 97KB of SQL running in PostgreSQL+pgvector, RICCI performs geometric analysis directly in the database with colocated vectors and tensors. It requires no external services, incorporates no ML models, and has no cloud dependencies.
 
-However:
+**You provide**: Embeddings (vector representations of messages)  
+**RICCI provides**: 12 orthogonal pathology signatures, each with quantified severity (0-1) and mathematical evidence of threshold violations.
 
-- It can't determine whether any held position is right or wrong.
-- It can't judge whether any particular concept is good or bad.
-- It can't predict which decisions or products will succeed or fail.
-- It can't discern what any given message actually said or meant.
-- It's not in any way a crystal ball; just numbers and field equations.
+Rigorous evidence makes RICCI invaluable for both real-time intervention and for post-mortem, forensic analysis of past failures.
 
-More aptly, RICCI is like a weather forecasting tool for organizational discourse. It shows when the *process* is breaking down before any resulting dysfunction costs money, so you can make proactive corrections before they escalate.
+## Scope & Limitations
 
-Another good example is seismometers, which listen for signs of earthquakes in 3 dimensions. Likewise, RICCI quantifies the real-time geometric stress on semantic fault lines—and how things are actively shifting—with 2000 dimensions of resolution.
+RICCI analyzes how communication is functioning geometrically, not what is being communicated or whether it's correct.
+
+What RICCI can't and doesn't measure:
+- Whether any held position or interpretation is right or wrong
+- Whether any particular concept or message is good or bad  
+- Which decisions, ideas, or products will succeed or fail
+- What any given message content actually said or meant
+
+What RICCI does measure:
+- Whether the *process* of communication is healthy or breaking down
+- Whether feedback loops are functioning or pathological
+- Whether the system can adapt or is becoming rigid/fragmented
+- Whether coordination patterns are productive or dysfunctional
+
+Think of it this way: RICCI can't tell if your team should use JWT or session tokens, but it *can* detect when two teams are using the same words ("stateless architecture") differently while building toward incompatible implementations. It can catch the divergence in week 3 when a simple alignment meeting can fix matters, rather than month 9 when it suddenly requires $180K of integration rework.
+
+Less "crystal ball", more "field equations for the geometry of meaning".
+
+## Key Concepts
+
+Before diving deeper, a few core building blocks:
+
+**Manifold Point** — A single point in the semantic manifold, typically representing one message or contribution. Each point contains both semantic and coherence field embeddings, plus computed geometric properties (metric tensor, curvature, mass) and temporal metadata.
+
+**Semantic Field** (`S(p,t)`) — The primary 2000-dimensional vector embedding representing *what is being expressed*. This is the content-bearing field.
+
+**Coherence Field** (`C(p,t)`) — A secondary 2000-dimensional vector representing *how coherently the expression integrates with context*. High coherence doesn't mean "good"—it means tightly coupled to existing structure, which can be healthy (integration) or pathological (rigidity).
+
+**Metric Tensor** (`g_ij(p,t)`) — The fundamental geometric object defining how distances and angles are measured at each point, derived from local field gradients. When the metric tensor stops evolving despite persistent tensions, you get rigidity. When its determinant approaches zero, constraint density spikes.
+
+**Semantic Mass** (`M(p,t)`) — A scalar quantity measuring how much "gravitational" influence a point exerts on the local geometry. Computed as `M = D × ρ × A` where D is recursive depth (how self-referential a point is), ρ is constraint density (the inverse of the metric determinant), and A is attractor stability (how "locked in" a point is). High mass structures warp local geometry and resist movement.
+
+**Coupling Tensor** (`R_ijk(p,q,t)`) — A 3rd-order tensor measuring how two points interact and influence each other's evolution. Strong coupling isn't inherently good or bad; it depends on whether it's enabling coordination or creating echo chambers.
+
+**Autopoietic Potential** (`Φ(C)`) — Measures the system's capacity for self-reinforcing structure creation. Defined as `Φ(C) = α(||C|| - C_threshold)^β` when coherence exceeds threshold, else zero. This is what fuels the "runaway" behavior in inflation signatures: the system generates structure faster than feedback can constrain it.
+
+**Geometric Signatures** — The 12 orthogonal patterns that emerge when field dynamics become pathological. Each signature has a mathematical definition based on thresholds in field properties (curvature, coupling strength, evolution rates, etc.).
 
 ## Privacy Considerations
 
 RICCI operates exclusively on vector embeddings. It never sees, nor can it process the meaning of raw text. User identifiers are type-enforced as UUIDs, precluding accidental storage of names, emails, or other direct identifiers. Privacy protection is built into the architecture.
 
-What this means:
-- The schema cannot accept usernames or PII in the `user_fingerprint` field.
+Technical constraints:
+- The RICCI schema cannot accept usernames or PII in the `user_fingerprint` field.
 - No plaintext content is ingested or stored in the database for analysis.
-- All computations operate solely on the geometric properties of embedding spaces.
+- All computations operate solely on the numerical, geometric properties of embedding spaces.
 
-What to know:
-- Embeddings encode semantic structure as single vectors in an arbitrary space. Inherently, they can't be perfectly anonymized, even when reduced to a singular point.
-- Temporal patterns across points in a dynamic field can reveal behavioral characteristics like coordinated manipulation, and malicious intent.
-- Coupling analysis explicitly measures and stores interaction patterns between vector points differentiated by UUIDs.
+Inherent limitations:
+- Embeddings can't be perfectly anonymized. Even a single vector encodes semantic structure that may be identifiable in context.
+- Coupling analysis explicitly measures and stores interaction patterns between points differentiated by UUIDs.
+- Temporal patterns across sequences of points enable the coordination analysis, escalation prediction, and rigidity detection that make RICCI valuable.
 
-Best practices for sensitive deployments include:
+Best practices for sensitive deployments:
 - Always use TLS/SSL for transport encryption between application and database.
 - Implement strong database access controls appropriate for your threat model. Regularly review and update these controls.
 - Exercise judicious consideration of what content should be embedded in the first place.
-- Rotate UUIDs periodically.
+- Rotate UUIDs periodically to limit temporal pattern exposure.
 
 RICCI provides the infrastructure to analyze coordination dynamics while minimizing data collection. How you configure that boundary is your responsibility as the deployer, subject to data privacy laws in your jurisdiction.
 
@@ -86,31 +121,35 @@ Each signature type is orthogonal to the other 11 ways the field equations can m
 6. **Coupling Dispersion** — Existing insight grows increasingly islanded, lacking sufficient interconnection. Bridges erode between *what the system knows* and *what it can do*.
 
 ### Inflation - *things can't be bounded*
-7. **Boundary Hyperasymmetry** — A system leverages its internal coherence to siphon off resources from host systems while giving far less in return.
+7. **Boundary Hyperasymmetry** — A system leverages its internal coherence to siphon off resources from host systems/ecosystems while giving substantively little in return.
 8. **Field Hypercoherence** — An insular overcommitment to the system's own internal logic. Self-elegance breeds subsequent immunity to questioning and incoming feedback.
-9. **Structure Hyperexpansion** — The system creates structure faster than it can be questioned. Internally-consistent narratives decouple from external reality.
+9. **Structure Hyperexpansion** — The system creates structure faster than it can be questioned or validated. Internally-consistent narratives diverge from the conditions of external reality.
 
 ### Distortion - *things can't align*
 10. **Operative Decoupling** — Interpretation is systematically wrong in a self-reinforcing way. A gap widens between field conditions and the understanding of them.
-11. **Signal Projection** — The system treats ambiguous, neutral, or positive inputs as a threat. Expectations of hostility often generate conditions for actual hostility, reinforcing the initial expectation.
+11. **Signal Projection** — The system treats ambiguous, neutral, or positive inputs as a threat. Expectations of hostility often generate conditions for actual hostility, reinforcing the initial expectation, creating a self-fulfilling prophecy.
 12. **Recursive Hypercoupling** — The system's self-concept becomes its interpretation, requiring and receiving external validation in lieu of actionable feedback.
 
 Each detector returns `(signature_type, severity ∈ [0,1], geometric_signature[], mathematical_evidence)`.
 
-**Full mathematical definitions**: See `docs/schema.md`
+For mathematical definitions, see `docs/schema.md`
 
 ## Why Geometry?
 
-Communication creates semantic structure. These structures evolve through tangled feedback loops, where ideas reinforce, converge, diverge, stabilize, or even collapse, based on how participants use language and respond to it.
+Communication creates semantic structure. These structures evolve through tangled feedback loops: ideas reinforce, converge, diverge, stabilize, or even collapse, based on how participants use language and respond to it.
 
-RICCI measures these finite dynamics using differential geometry:
+Most approaches treat embeddings as static points to cluster or compare. But meaning isn't static; it's a dynamic field that curves, couples, and evolves under the influence of interaction. The question now exceeds "how similar are these vectors?" to "how is *interpretation itself* being warped by the forces acting on it?"
 
-- Coupling strength — How connected are participants?
-- Semantic mass — How much conviction drives a position?
-- Attractor stability — How locked in is this viewpoint?
-- Coherence curvature — How is inferred meaning bending under pressure?
+This is why RICCI uses differential geometry, the mathematics of curved spaces and field dynamics. A rigid interpretive framework manifests as a measurable change in the metric tensor. Echo chambers emerge from recursive coupling that creates attractor wells in the field.
 
-When these measurements hit critical thresholds, RICCI flags specific pathologies with quantified severity.
+### What RICCI Measures
+
+- **Coupling strength** — How connected are participants? Are they building on each other's ideas or talking past one another?
+- **Semantic mass** — How much conviction drives a position? Mass warps the local geometry, making some ideas harder to move away from.
+- **Attractor stability** — How locked in is this viewpoint? Stable attractors resist change; over-stability becomes rigidity.
+- **Coherence curvature** — How is inferred meaning bending under pressure? Excessive curvature signals distortion or imminent breakdown.
+
+When these field properties reach critical thresholds, RICCI flags specific dysfunction signatures with quantified severity. The detectors operate on field equations that measure structural breakdown in the mathematical representation of meaning.
 
 ## Quick Start
 
@@ -139,10 +178,11 @@ docker compose down
 
 ### Load Your Data
 
-RICCI requires only three ingredients:
+RICCI requires only three ingredients, plus an optional grouping ID:
 1. Embeddings — Vector representations of each message (2000D)
 2. Provenance — Associated UUID (`user_fingerprint`)
-3. Timestamp — When the manifoldpoint was created (`creation_timestamp`)
+3. Timestamp — When the manifold point was created (`creation_timestamp`)
+4. (Optional) Conversation ID — UUID grouping identifier for related points (`conversation_id`)
 
 ```sql
 INSERT INTO ricci.manifold_points (
@@ -150,7 +190,7 @@ INSERT INTO ricci.manifold_points (
     semantic_field, coherence_field
 ) VALUES (
     gen_random_uuid(), 
-    '550e8400-e29b-41d4-a716-446655440000',  -- conversation_id
+    '550e8400-e29b-41d4-a716-446655440000',  -- conversation_id (optional; set NULL if not used)
     '123e4567-e89b-12d3-a456-426614174000',  -- user_fingerprint (consistent per user; persistent UUIDs may enable tracking—see "Privacy Considerations" above for UUID rotation recommendations)
     NOW(),
     embedding_vector, 
@@ -249,13 +289,13 @@ SELECT * FROM ricci.detect_escalation_via_field_evolution(
 
 ## Architecture
 
-- Storage — Leverages pgvector to enable 2000-dimensional vector fields for semantic and coherence analysis.
-- Computation — Implements pure SQL functions with differential geometry operators.
-- Privacy — Enforces UUID user identifiers in embedding-only operation. See [Privacy Considerations](#privacy-considerations).
-- Auditability — Every detection returns mathematical evidence showing which thresholds were crossed and why.
-- Performance — Optimizes with HNSW indices and materialized views for real-time analysis.
-- Size — 97KB, 7-schema SQL implementation requiring no external services or ML models.
-- Scale — Supports single-database deployment.
+- **Storage** — Leverages pgvector to enable 2000-dimensional vector fields for semantic and coherence analysis.
+- **Computation** — Pure SQL functions implementing differential geometry operators (Christoffel symbols, covariant derivatives, curvature tensors).
+- **Privacy** — UUID-enforced user identifiers, embedding-only operation. See [Privacy Considerations](#privacy-considerations).
+- **Auditability** — Traceable mathematical evidence for every detection showing threshold violations.
+- **Performance** — HNSW indices for vector similarity, materialized views for monitoring, optimized for real-time analysis.
+- **Footprint** — 97KB across 7 schema files, zero external dependencies.
+- **Deployment** — Single PostgreSQL database, no distributed infrastructure required.
 
 ## Testing
 
@@ -297,7 +337,7 @@ See `tests/README.md` for test framework details and assertion APIs.
 
 ## Theoretical Foundation
 
-RICCI implements Recurgent Field Theory (RFT), a mathematical framework modeling semantic systems as differentiable manifolds with recursive coupling. RFT models geometric signatures that emerge when feedback loops enter unstable configurations.
+RICCI implements Recurgent Field Theory (RFT), a Lagrangian framework modeling semantic systems as differentiable manifolds with recursive coupling. RFT models geometric signatures that emerge when feedback loops enter unstable configurations.
 
 Similar patterns appear across scales, from individual cognition to organizational dynamics, suggesting common geometric mechanisms intrinsic to complex systems of inference.
 
@@ -306,9 +346,3 @@ See `docs/schema.md` for function-level mathematical details and `schema/*.sql` 
 ## License
 
 MIT License - See LICENSE file for details
-
-## Contact
-
-Built by Diesel Black following 25 years of analyzing complex systems.
-
-*"The crisis in month 12 was always baked in from week 2. Now we can fix it in week 3 with a simple engineering meeting."*
