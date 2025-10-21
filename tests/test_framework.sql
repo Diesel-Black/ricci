@@ -299,7 +299,8 @@ BEGIN
     -- Capture test point ids (test UUIDs start with all zeros)
     SELECT array_agg(id) INTO test_point_ids
     FROM ricci.manifold_points 
-    WHERE user_fingerprint::text LIKE '00000000-0000-0000-0000-%';
+    WHERE user_fingerprint >= '00000000-0000-0000-0000-000000000000'::uuid
+      AND user_fingerprint <  '00000001-0000-0000-0000-000000000000'::uuid;
 
     IF test_point_ids IS NULL OR array_length(test_point_ids, 1) IS NULL THEN
         RETURN;
