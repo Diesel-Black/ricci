@@ -17,16 +17,16 @@
 
 -- Operative Decoupling
 
--- Summary: Detect negative interpretation bias with threat‑pattern concentration.
--- Condition: mean negative bias > θ_bias ∧ threat pattern concentration > τ.
+-- Summary: Detect divergence between self interpretation and consensus normalized by field magnitude.
+-- Condition: (E_self_divergence / ||C||) > τ with adequate samples.
 -- Inputs:
 --   - point_id UUID — target point
---   - bias_threshold FLOAT — θ_bias (default 0.3)
---   - threat_hyperattractor_threshold FLOAT — τ (default 0.8)
--- Assumptions: Use small window norm as a bias proxy; count threats where mass high and coupling low.
--- Numerical guards: Require sufficient samples; compute norms over small window.
+--   - divergence_threshold FLOAT — τ (default 0.5)
+--   - time_window INTERVAL — sample horizon (default '8 hours')
+-- Assumptions: Use latest non‑self coherence as baseline consensus; compare over active dimension.
+-- Numerical guards: Require ||C|| > 0.1 and >2 samples; use ε in ratios.
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
--- Severity scaling: severity = clip(bias · threat_concentration · 2).
+-- Severity scaling: severity = clip(ratio · consensus_divergence).
 CREATE OR REPLACE FUNCTION ricci.detect_operative_decoupling(
     point_id UUID,
     divergence_threshold FLOAT DEFAULT 0.5,
@@ -44,7 +44,7 @@ DECLARE
     interpretation_divergence FLOAT := 0.0;
     consensus_divergence FLOAT := 0.0;
     field_magnitude FLOAT;
-    insular_decoupling_ratio FLOAT;
+    operative_decoupling_ratio FLOAT;
     decoupling_signature FLOAT;
     
     baseline_coherence VECTOR(2000);
@@ -92,21 +92,21 @@ BEGIN
         interpretation_divergence := interpretation_divergence / sample_count;
         consensus_divergence := consensus_divergence / sample_count;
         
-        insular_decoupling_ratio := interpretation_divergence / field_magnitude;
+        operative_decoupling_ratio := interpretation_divergence / field_magnitude;
         
-        IF insular_decoupling_ratio > divergence_threshold THEN
-            decoupling_signature := insular_decoupling_ratio * consensus_divergence;
+        IF operative_decoupling_ratio > divergence_threshold THEN
+            decoupling_signature := operative_decoupling_ratio * consensus_divergence;
             
             RETURN QUERY SELECT 
                 'OPERATIVE_DECOUPLING'::TEXT,
                 LEAST(1.0, decoupling_signature),
-                ARRAY[interpretation_divergence, field_magnitude, insular_decoupling_ratio, consensus_divergence],
+                ARRAY[interpretation_divergence, field_magnitude, operative_decoupling_ratio, consensus_divergence],
                 format(
                     'Interpretation divergence: %s > %s * field magnitude: %s (ratio: %s)', 
                     to_char(interpretation_divergence::numeric, 'FM999990.000'),
                     to_char(divergence_threshold::numeric, 'FM999990.0'),
                     to_char(field_magnitude::numeric, 'FM999990.000'),
-                    to_char(insular_decoupling_ratio::numeric, 'FM999990.000')
+                    to_char(operative_decoupling_ratio::numeric, 'FM999990.000')
                 );
         END IF;
     END IF;
@@ -117,16 +117,16 @@ $$;
 
 -- Signal Projection
 
--- Summary: Detect divergence between self interpretation and consensus normalized by field magnitude.
--- Condition: (E_self_divergence / ||C||) > τ with adequate samples.
+-- Summary: Detect negative interpretation bias with concentrated threat patterns.
+-- Condition: mean negative bias > θ_bias ∧ threat pattern concentration > τ.
 -- Inputs:
 --   - point_id UUID — target point
---   - divergence_threshold FLOAT — τ (default 0.5)
---   - time_window INTERVAL — sample horizon (default '8 hours')
--- Assumptions: Use latest non‑self coherence as baseline consensus; compare over active dimension.
--- Numerical guards: Require ||C|| > 0.1 and >2 samples; use ε in ratios.
+--   - bias_threshold FLOAT — θ_bias (default 0.3)
+--   - threat_hyperattractor_threshold FLOAT — τ (default 0.8)
+-- Assumptions: Use small window norm as a bias proxy; count threats where mass is high and coupling is low.
+-- Numerical guards: Require sufficient samples; compute norms over small window.
 -- Returns: TABLE(signature_type, severity ∈ [0,1], geometric_signature FLOAT[], mathematical_evidence TEXT).
--- Severity scaling: severity = clip(ratio · consensus_divergence).
+-- Severity scaling: severity = clip(bias · threat_concentration · 2).
 CREATE OR REPLACE FUNCTION ricci.detect_signal_projection(
     point_id UUID,
     bias_threshold FLOAT DEFAULT 0.3,

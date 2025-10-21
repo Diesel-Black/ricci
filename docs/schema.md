@@ -2,7 +2,7 @@
 
 ## Overview
 
-RICCI implements a Postgres schema to perform its geometric embedding analysis. The engine detects 12 signatures of coherence breakdown across 4 categories: [Rigidity](#rigidity-signatures), [Fragmentation](#fragmentation-signatures), [Inflation](#inflation-signatures), and [Coupling](#coupling-signatures).
+RICCI implements a Postgres schema to perform its geometric embedding analysis. The engine detects 12 signatures of coherence breakdown across 4 categories: [Rigidity](#rigidity-signatures), [Fragmentation](#fragmentation-signatures), [Inflation](#inflation-signatures), and [Distortion](#distortion-signatures).
 
 This document describes the current schema implementation as of the latest commit.
 
@@ -361,9 +361,9 @@ Detects interpretive frameworks freezing while tensions persist.
 
 ---
 
-#### Metric Densification (MD)
+#### Field Calcification (FC)
 ```sql
-ricci.detect_metric_densification(
+ricci.detect_field_calcification(
     point_id UUID,
     responsiveness_threshold FLOAT DEFAULT 0.01,
     time_window INTERVAL DEFAULT '6 hours'
@@ -376,9 +376,9 @@ Detects low response rate of coherence under external pressure.
 
 ---
 
-#### Metric Sequestration (MS)
+#### Attractor Isolation (AI)
 ```sql
-ricci.detect_metric_sequestration(
+ricci.detect_attractor_isolation(
     point_id UUID,
     attractor_threshold FLOAT DEFAULT 0.8,
     force_ratio_threshold FLOAT DEFAULT 3.0
@@ -396,9 +396,9 @@ Detects over-commitment to existing attractors or constraints.
 
 **Hallmark:** Under-constraint precipitating disintegration.
 
-#### Metric Dissociation (MDs)
+#### Attractor Dissociation
 ```sql
-ricci.detect_metric_dissociation(
+ricci.detect_attractor_dissociation(
     point_id UUID,
     splintering_threshold FLOAT DEFAULT 2.0,
     time_window INTERVAL DEFAULT '2 hours'
@@ -411,9 +411,9 @@ Detects attractor proliferation beyond stabilization capacity.
 
 ---
 
-#### Metric Dissolution (MDo)
+#### Field Dissolution
 ```sql
-ricci.detect_metric_dissolution(
+ricci.detect_field_dissolution(
     point_id UUID,
     gradient_ratio_threshold FLOAT DEFAULT 3.0,
     acceleration_threshold FLOAT DEFAULT 0.0
@@ -426,9 +426,9 @@ Detects unstable gradient growth relative to magnitude.
 
 ---
 
-#### Metric Dispersion (MP)
+#### Coupling Dispersion (CD)
 ```sql
-ricci.detect_metric_dispersion(
+ricci.detect_coupling_dispersion(
     point_id UUID,
     decay_threshold FLOAT DEFAULT -0.1,
     sapience_compensation_threshold FLOAT DEFAULT 0.3
@@ -445,9 +445,9 @@ Detects coupling decay without compensatory regulation.
 
 **Hallmark:** Runaway autopoiesis (creation of structure without regulatory mechanisms) resulting in malignancy.
 
-#### Metric Hyperexpansion (MHex)
+#### Structure Hyperexpansion
 ```sql
-ricci.detect_metric_hyperexpansion(
+ricci.detect_structure_hyperexpansion(
     point_id UUID,
     autopoietic_threshold FLOAT DEFAULT 5.0,
     circumspection_threshold FLOAT DEFAULT 0.1,
@@ -461,9 +461,9 @@ Detects autopoietic dominance with low circumspection and sapience.
 
 ---
 
-#### Metric Hypercoherence (MHC)
+#### Field Hypercoherence (FHC)
 ```sql
-ricci.detect_metric_hypercoherence(
+ricci.detect_field_hypercoherence(
     point_id UUID,
     coherence_max_threshold FLOAT DEFAULT 0.95,
     leakage_threshold FLOAT DEFAULT 0.1,
@@ -477,9 +477,9 @@ Detects coherence saturation with low external influence flux.
 
 ---
 
-#### Metric Hyperasymmetry (MHY)
+#### Boundary Hyperasymmetry (BHY)
 ```sql
-ricci.detect_metric_hyperasymmetry(
+ricci.detect_boundary_hyperasymmetry(
     point_id UUID,
     growth_threshold FLOAT DEFAULT 0.5,
     ecological_drain_threshold FLOAT DEFAULT -0.2,
@@ -493,13 +493,13 @@ Detects local mass growth concurrent with ecological drain.
 
 ---
 
-### Coupling Signatures
+### Distortion Signatures
 
 **Hallmark:** Interpretation breakdowns.
 
-#### Metric Tension (MT)
+#### Signal Projection
 ```sql
-ricci.detect_metric_tension(
+ricci.detect_signal_projection(
     point_id UUID,
     bias_threshold FLOAT DEFAULT 0.3,
     threat_hyperattractor_threshold FLOAT DEFAULT 0.8
@@ -512,9 +512,9 @@ Detects negative bias with concentrated threat patterns.
 
 ---
 
-#### Metric Decoupling (MDc)
+#### Operative Decoupling (ODc)
 ```sql
-ricci.detect_metric_decoupling(
+ricci.detect_operative_decoupling(
     point_id UUID,
     divergence_threshold FLOAT DEFAULT 0.5,
     time_window INTERVAL DEFAULT '8 hours'
@@ -527,9 +527,9 @@ Detects interpretation divergence relative to field magnitude.
 
 ---
 
-#### Metric Hypercoupling (MHCp)
+#### Recursive Hypercoupling
 ```sql
-ricci.detect_metric_hypercoupling(
+ricci.detect_recursive_hypercoupling(
     point_id UUID,
     self_coupling_threshold FLOAT DEFAULT 0.8,
     external_reference_threshold FLOAT DEFAULT 0.2
