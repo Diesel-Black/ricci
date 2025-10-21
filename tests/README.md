@@ -14,7 +14,7 @@ tests/
 │   ├── test_rigidity_signatures.sql
 │   ├── test_fragmentation_signatures.sql
 │   ├── test_inflation_signatures.sql
-│   └── test_coupling_signatures.sql
+│   └── test_distortion_signatures.sql
 ├── integration/                # End-to-end pipeline tests
 │   └── test_complete_pipeline.sql
 └── performance/                # Benchmarks and latency guards
@@ -73,7 +73,7 @@ Retained test artifacts should be cleaned periodically. Call `ricci_test.teardow
 
 ### Categories
 - Basemath: semantic mass, autopoietic potential, circumspection operator; matrix ops, curvature, geodesics.
-- Signatures: rigidity, fragmentation, inflation, coupling detectors. Verifies row schema (type, severity ∈ [0,1], evidence) and edge handling.
+- Signatures: rigidity, fragmentation, inflation, distortion detectors. Verifies row schema (type, severity ∈ [0,1], evidence) and edge handling.
 - Integration: complete pipeline, coordination, escalation, field evolution, monitoring views.
 - Performance: time bounds for critical functions and detectors.
 
