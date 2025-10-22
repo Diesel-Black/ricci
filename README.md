@@ -68,7 +68,7 @@ Before diving deeper, a few core building blocks:
 
 **Manifold Point** — Conceptually, a single point in the semantic manifold (typically one message or contribution). In the implementation, this is represented by a row in `ricci.manifold_points` with both semantic and coherence embeddings plus computed geometric properties (metric tensor/determinant, curvature, mass) and temporal metadata.
 
-**Semantic Field** (`S(p,t)`) — The primary 2000-dimensional vector embedding representing *what is being expressed*. This is the content-bearing field.
+**Semantic Field** (`S(p,t)`) — The primary 2000-dimensional vector representing *what is being expressed*. This is the content-bearing field.
 
 **Coherence Field** (`C(p,t)`) — A secondary 2000-dimensional vector representing *how coherently the expression integrates with context*. High coherence doesn't mean "good"—it means tightly coupled to existing structure, which can be healthy (integration) or pathological (rigidity).
 
