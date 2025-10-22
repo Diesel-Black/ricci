@@ -30,9 +30,9 @@ RICCI identifies these signatures before they destroy value and competitive adva
 
 An ounce of prevention is worth a metric ton of cure. RICCI is a "semantic MRI" for complex communication systems, detecting the mathematical signatures of pathologies in semantic point patterns that threaten systemic health long before they can become disastrous money pits or rework nightmares.
 
-Think of it as "weather forecasting for organizational discourse". Just as meteorologists track pressure systems and temperature gradients to predict storms, RICCI tracks semantic field dynamics and coupling patterns to predict breakdowns in the *process* before any resulting dysfunction costs money.
+Think of it as "weather forecasting for organizational discourse". Just as meteorologists track pressure systems and temperature gradients to predict storms, RICCI tracks semantic field dynamics and coupling patterns to predict breakdowns in the *process* before any resulting dysfunction starts costing money.
 
-Or consider "seismometers", which listen for signs of earthquakes in 3 dimensions. RICCI quantifies real-time geometric stress on semantic fault lines—and how things are actively shifting—with 2000 dimensions of resolution.
+Or consider "seismometers", which listen for signs of earthquakes in 3 dimensions. RICCI quantifies the real-time geometric stress on semantic fault lines—and how things are actively shifting—with 2000 dimensions of resolution.
 
 **How It Works:**  
 In 97KB of SQL running in PostgreSQL+pgvector, RICCI performs geometric analysis directly in the database with colocated vectors and tensors. It requires no external services, incorporates no ML models, and has no cloud dependencies.
@@ -40,7 +40,7 @@ In 97KB of SQL running in PostgreSQL+pgvector, RICCI performs geometric analysis
 **You provide**: Embeddings (vector representations of messages)  
 **RICCI provides**: 12 orthogonal pathology signatures, each with quantified severity (0-1) and mathematical evidence of threshold violations.
 
-Rigorous evidence makes RICCI invaluable for both real-time intervention and for post-mortem, forensic analysis of past failures.
+Rigorous evidence makes RICCI invaluable for both real-time intervention and for post-mortem forensic analysis of past failures.
 
 ### Scope & Limitations
 
@@ -52,13 +52,13 @@ What RICCI can't and doesn't measure:
 - Which decisions, ideas, or products will succeed or fail
 - What any given message content actually said or meant
 
-What RICCI does measure:
+What RICCI can and does measure:
 - Whether the *process* of communication is healthy or breaking down
 - Whether feedback loops are functioning or pathological
 - Whether the system can adapt or is becoming rigid/fragmented
 - Whether coordination patterns are productive or dysfunctional
 
-Think of it this way: RICCI can't tell if your team should use JWT or session tokens, but it *can* detect when two teams are using the same words ("stateless architecture") differently while building toward incompatible implementations. It can catch the divergence in week 3 when a simple alignment meeting can fix matters, rather than month 9 when it suddenly requires $180K of integration rework.
+Think of it this way: RICCI can't tell if your team should use JWT or session tokens, but it *can* detect when two teams are using the same words ("stateless architecture") differently while building toward incompatible implementations. It can catch that divergence in week 3 when a simple alignment meeting can fix matters, rather than month 9 when the integration crisis requires $180K of rework.
 
 Less "crystal ball", more "field equations for the geometry of meaning".
 
@@ -66,7 +66,7 @@ Less "crystal ball", more "field equations for the geometry of meaning".
 
 Before diving deeper, a few core building blocks:
 
-**Manifold Point** — A single point in the semantic manifold, typically representing one message or contribution. Each point contains both semantic and coherence field embeddings, plus computed geometric properties (metric tensor, curvature, mass) and temporal metadata.
+**Manifold Point** — Conceptually, a single point in the semantic manifold (typically one message or contribution). In the implementation, this is represented by a row in `ricci.manifold_points` with both semantic and coherence embeddings plus computed geometric properties (metric tensor/determinant, curvature, mass) and temporal metadata.
 
 **Semantic Field** (`S(p,t)`) — The primary 2000-dimensional vector embedding representing *what is being expressed*. This is the content-bearing field.
 
