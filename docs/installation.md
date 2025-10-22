@@ -73,7 +73,7 @@ psql postgresql://ricci_user:changeme@localhost:5444/ricci_db -f tests/run_tests
 The test runner:
 1. Loads the schema
 2. Initializes the `ricci_test` framework
-3. Seeds randomness via `setseed(0.42)`
+3. Seeds randomness via `setseed(0.42)` (using a fixed seed for reproducible test runs)
 4. Executes test categories:
    - Foundation functions
    - Geometric analysis
