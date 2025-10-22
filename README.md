@@ -183,7 +183,7 @@ INSERT INTO ricci.manifold_points (
 );
 ```
 
-See [Operations Guide: Loading Data](docs/operations-guide.md#loading-data) for detailed field descriptions and best practices.
+See [Operations Guide: Privacy Considerations](docs/operations-guide.md#privacy-considerations) and [Operations Guide: Loading Data](docs/operations-guide.md#loading-data) for detailed descriptions and best practices.
 
 ### Run Detection
 
