@@ -12,22 +12,21 @@ Organizational dysfunction follows one or more of 12 geometric patterns that rep
 RICCI identifies these signatures before they destroy value and competitive advantage. Its 12 orthogonal detectors measure field dynamics in real-time, each producing traceable, mathematical evidence showing which geometric thresholds were crossed and why.
 
 ## Table of Contents
-- [What RICCI Does](#what-ricci-does)
-- [Scope & Limitations](#scope--limitations)
+- [Overview](#overview)
 - [Key Concepts](#key-concepts)
 - [Privacy Considerations](#privacy-considerations)
 - [The Twelve Detectors](#the-twelve-detectors)
 - [Why Geometry?](#why-geometry)
-- [Quick Start](#quick-start)
-- [Manual Installation](#manual-installation)
+- [Documentation](#documentation)
+- [Installation](#installation)
 - [Use Cases](#use-cases)
-- [Architecture](#architecture)
-- [Testing](#testing)
+- [Technical Details](#technical-details)
 - [Theoretical Foundation](#theoretical-foundation)
 - [License](#license)
-- [Contact](#contact)
 
-## What RICCI Does
+## Overview
+
+### What RICCI Does
 
 An ounce of prevention is worth a metric ton of cure. RICCI is a "semantic MRI" for complex communication systems, detecting the mathematical signatures of pathologies in semantic point patterns that threaten systemic health long before they can become disastrous money pits or rework nightmares.
 
@@ -35,8 +34,7 @@ Think of it as "weather forecasting for organizational discourse". Just as meteo
 
 Or consider "seismometers", which listen for signs of earthquakes in 3 dimensions. RICCI quantifies real-time geometric stress on semantic fault lines—and how things are actively shifting—with 2000 dimensions of resolution.
 
-### How It Works
-
+**How It Works:**  
 In 97KB of SQL running in PostgreSQL+pgvector, RICCI performs geometric analysis directly in the database with colocated vectors and tensors. It requires no external services, incorporates no ML models, and has no cloud dependencies.
 
 **You provide**: Embeddings (vector representations of messages)  
@@ -44,7 +42,7 @@ In 97KB of SQL running in PostgreSQL+pgvector, RICCI performs geometric analysis
 
 Rigorous evidence makes RICCI invaluable for both real-time intervention and for post-mortem, forensic analysis of past failures.
 
-## Scope & Limitations
+### Scope & Limitations
 
 RICCI analyzes how communication is functioning geometrically, not what is being communicated or whether it's correct.
 
@@ -86,25 +84,9 @@ Before diving deeper, a few core building blocks:
 
 ## Privacy Considerations
 
-RICCI operates exclusively on vector embeddings. It never sees, nor can it process the meaning of raw text. User identifiers are type-enforced as UUIDs, precluding accidental storage of names, emails, or other direct identifiers. Privacy protection is built into the architecture.
+RICCI operates exclusively on vector embeddings and never processes raw text. User identifiers are type-enforced as UUIDs, precluding accidental PII storage. While embeddings can't be perfectly anonymized, the architecture minimizes data collection by design.
 
-Technical constraints:
-- The RICCI schema cannot accept usernames or PII in the `user_fingerprint` field.
-- No plaintext content is ingested or stored in the database for analysis.
-- All computations operate solely on the numerical, geometric properties of embedding spaces.
-
-Inherent limitations:
-- Embeddings can't be perfectly anonymized. Even a single vector encodes semantic structure that may be identifiable in context.
-- Coupling analysis explicitly measures and stores interaction patterns between points differentiated by UUIDs.
-- Temporal patterns across sequences of points enable the coordination analysis, escalation prediction, and rigidity detection that make RICCI valuable.
-
-Best practices for sensitive deployments:
-- Always use TLS/SSL for transport encryption between application and database.
-- Implement strong database access controls appropriate for your threat model. Regularly review and update these controls.
-- Exercise judicious consideration of what content should be embedded in the first place.
-- Rotate UUIDs periodically to limit temporal pattern exposure.
-
-RICCI provides the infrastructure to analyze coordination dynamics while minimizing data collection. How you configure that boundary is your responsibility as the deployer, subject to data privacy laws in your jurisdiction.
+For deployment best practices, UUID rotation strategies, and detailed privacy considerations, see the [Operations Guide: Privacy](docs/operations-guide.md#privacy-considerations).
 
 ## The Twelve Detectors
 
@@ -132,7 +114,7 @@ Each signature type is orthogonal to the other 11 ways the field equations can m
 
 Each detector returns `(signature_type, severity ∈ [0,1], geometric_signature[], mathematical_evidence)`.
 
-For mathematical definitions, see `docs/schema.md`
+For detailed API documentation, see the [API Reference](docs/api-reference.md). For mathematical foundations, see the [Mathematical Foundation](docs/mathematical-foundation.md).
 
 ## Why Geometry?
 
@@ -151,9 +133,17 @@ This is why RICCI uses differential geometry, the mathematics of curved spaces a
 
 When these field properties reach critical thresholds, RICCI flags specific dysfunction signatures with quantified severity. The detectors operate on field equations that measure structural breakdown in the mathematical representation of meaning.
 
-## Quick Start
+## Documentation
 
-### Docker Installation (Recommended)
+- [API Reference](docs/api-reference.md) — Complete function-level API reference
+- [Mathematical Foundation](docs/mathematical-foundation.md) — Theoretical concepts and field equations
+- [Operations Guide](docs/operations-guide.md) — Usage examples and monitoring strategies
+- [Installation Guide](docs/installation.md) — Setup, testing, and verification
+- `schema/*.sql` — Implementation source code
+
+## Installation
+
+### Docker (Recommended)
 
 ```bash
 # Start PostgreSQL 17 + pgvector 0.8.0 with RICCI schema loaded
@@ -178,25 +168,22 @@ docker compose down
 
 ### Load Your Data
 
-RICCI requires only three ingredients, plus an optional grouping ID:
-1. Embeddings — Vector representations of each message (2000D)
-2. Provenance — Associated UUID (`user_fingerprint`)
-3. Timestamp — When the manifold point was created (`creation_timestamp`)
-4. (Optional) Conversation ID — UUID grouping identifier for related points (`conversation_id`)
+RICCI requires embeddings (2000D vectors), a UUID `user_fingerprint`, and a timestamp:
 
 ```sql
 INSERT INTO ricci.manifold_points (
-    id, conversation_id, user_fingerprint, creation_timestamp,
+    id, user_fingerprint, creation_timestamp,
     semantic_field, coherence_field
 ) VALUES (
     gen_random_uuid(), 
-    '550e8400-e29b-41d4-a716-446655440000',  -- conversation_id (optional; set NULL if not used)
-    '123e4567-e89b-12d3-a456-426614174000',  -- user_fingerprint (consistent per user; persistent UUIDs may enable tracking—see "Privacy Considerations" above for UUID rotation recommendations)
+    '123e4567-e89b-12d3-a456-426614174000',
     NOW(),
     embedding_vector, 
     embedding_vector
 );
 ```
+
+See [Operations Guide: Loading Data](docs/operations-guide.md#loading-data) for detailed field descriptions and best practices.
 
 ### Run Detection
 
@@ -213,9 +200,7 @@ GROUP BY signature_type
 HAVING AVG(severity) > 0.5;
 ```
 
----
-
-## Manual Installation
+### Manual Installation
 
 **Requirements:** PostgreSQL 17+ with pgvector 0.8.0+
 
@@ -232,7 +217,7 @@ HAVING AVG(severity) > 0.5;
 
 ### Early Warning System
 
-Monitor Slack channels, GitHub issues, or other communication channels for signs of dysfunction
+Monitor communication channels for signs of dysfunction:
 
 ```sql
 -- Flag high-risk discussions
@@ -250,44 +235,11 @@ ORDER BY severity DESC;
 --                        |          | < 0.5 (dispersion ratio: 1.89)
 ```
 
-### Post-Mortem Analysis
+For additional use cases including post-mortem analysis, team health monitoring, escalation prediction, and temporal pattern analysis, see the [Operations Guide: Use Cases](docs/operations-guide.md#use-cases).
 
-Understand why a project failed by analyzing existing communication geometry
-```sql
--- Trace pathology evolution over time
-SELECT signature_type, severity, creation_timestamp 
-FROM ricci.manifold_points mp
-CROSS JOIN LATERAL ricci.detect_all_signatures(mp.id)
-WHERE conversation_id = '8b1e7a30-1f3a-4b8a-9b9e-1a2b3c4d5e6f'
-ORDER BY creation_timestamp;
-```
+## Technical Details
 
-### Team Health Monitoring
-
-Detect coordination breakdowns or echo chamber formation
-
-```sql
--- Identify problematic coupling patterns
-SELECT * FROM ricci.detect_coordination_via_coupling(
-    time_window => '7 days',
-    coupling_threshold => 0.8
-);
-```
-
-### Escalation Prediction
-
-Forecast when discussions will spiral based on field dynamics
-
-```sql
--- Get intervention urgency scores
-SELECT * FROM ricci.detect_escalation_via_field_evolution(
-    ARRAY(SELECT id FROM ricci.manifold_points 
-          WHERE conversation_id = 'a3dcb4d2-6f1a-4a3e-9fb7-9c4ad5b6e7f8'
-          ORDER BY creation_timestamp)
-);
-```
-
-## Architecture
+### Architecture
 
 - **Storage** — Leverages pgvector to enable 2000-dimensional vector fields for semantic and coherence analysis.
 - **Computation** — Pure SQL functions implementing differential geometry operators (Christoffel symbols, covariant derivatives, curvature tensors).
@@ -297,51 +249,15 @@ SELECT * FROM ricci.detect_escalation_via_field_evolution(
 - **Footprint** — 97KB across 7 schema files, zero external dependencies.
 - **Deployment** — Single PostgreSQL database, no distributed infrastructure required.
 
-## Testing
+### Testing
 
-RICCI includes a SQL-native test suite that runs entirely in Postgres. The runner loads the schema, initializes `ricci_test`, seeds randomness via `setseed(0.42)`, executes category suites, prints a summary, and tears down by default.
-
-### Run The Full Test Suite
-
-```bash
-psql postgresql://ricci_user:changeme@localhost:5444/ricci_db -f tests/run_tests.sql
-```
-
-### Run Specific Test Categories
-
-```bash
-# Initialize framework first
-psql postgresql://ricci_user:changeme@localhost:5444/ricci_db -f tests/test_framework.sql
-
-# Then run specific category
-psql postgresql://ricci_user:changeme@localhost:5444/ricci_db -f tests/signatures/test_rigidity_signatures.sql
-```
-
-### Retain Test Results
-
-By default, the test suite tears down after completion. To retain results:
-- Modify the runner to call `SELECT ricci_test.teardown_test_framework(false);`, or
-- Run framework + test files manually (above) and query `ricci_test.test_results`
-- To export failures: add `\o tests/results/failed.tsv` before the failure query and `\o`
-
-### Expected Performance Bounds
-
-- Foundation functions ≤ 1s for ~1k evaluations
-- Matrix operations (50×50) ≤ 3s
-- Single-category detectors ≤ 5s per point
-- Full `detect_all_signatures` ≤ 10s per point
-- Coordination analysis (5 nodes) ≤ 5s
-- Field evolution (single step) ≤ 8s
-
-See `tests/README.md` for test framework details and assertion APIs.
+RICCI includes a comprehensive SQL-native test suite. Run with `psql -f tests/run_tests.sql`. See the [Installation Guide: Testing](docs/installation.md#testing) for detailed test commands, expected performance bounds, and test framework documentation.
 
 ## Theoretical Foundation
 
 RICCI implements Recurgent Field Theory (RFT), a Lagrangian framework modeling semantic systems as differentiable manifolds with recursive coupling. RFT models geometric signatures that emerge when feedback loops enter unstable configurations.
 
 Similar patterns appear across scales, from individual cognition to organizational dynamics, suggesting common geometric mechanisms intrinsic to complex systems of inference.
-
-See `docs/schema.md` for function-level mathematical details and `schema/*.sql` for implementation.
 
 ## License
 
