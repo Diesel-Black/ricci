@@ -257,7 +257,7 @@ RICCI includes a comprehensive SQL-native test suite. Run with `psql -f tests/ru
 
 RICCI implements Recurgent Field Theory (RFT), a Lagrangian framework modeling semantic systems as differentiable manifolds with recursive coupling. RFT models geometric signatures that emerge when feedback loops enter unstable configurations.
 
-Similar patterns appear across scales, from individual cognition to organizational dynamics, suggesting common geometric mechanisms intrinsic to complex systems of inference.
+Similar patterns appear across scales, from individual cognition to organizational dynamics, suggesting common geometric mechanisms intrinsic to complex systems of inference. For more, see [Mathematical Foundation](docs/mathematical-foundation.md).
 
 ## License
 
