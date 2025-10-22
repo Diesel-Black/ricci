@@ -169,7 +169,7 @@ Where `ρ(p,t) = 1 / max(det(g_ij), 1e-10)` (constraint density with regularizat
 **Example:**
 ```sql
 SELECT ricci.compute_semantic_mass(0.8, 0.05, 0.9);
--- Returns: 14.4 (high mass due to low determinant)
+-- Returns: 14.4 (= 0.8 × (1/0.05) × 0.9; high mass due to high constraint density from low determinant)
 ```
 
 ---
