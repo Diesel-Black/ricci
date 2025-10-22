@@ -24,8 +24,8 @@ INSERT INTO ricci.manifold_points (
     '550e8400-e29b-41d4-a716-446655440000',  -- conversation_id (optional; set NULL if not used)
     '123e4567-e89b-12d3-a456-426614174000',  -- user_fingerprint (consistent per user)
     NOW(),
-    embedding_vector,  -- VECTOR(2000)
-    embedding_vector   -- VECTOR(2000)
+    embedding_vector,  -- VECTOR(2000) - semantic_field
+    embedding_vector   -- VECTOR(2000) - coherence_field (typically same as semantic_field for initial inserts)
 );
 ```
 
