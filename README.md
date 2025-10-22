@@ -5,7 +5,7 @@
 
 ## *"How did we not see this coming?"*
 
-This question follows every preventable organizational catastrophe. Teams often see the warning signs ahead of time, but lack the language to name them, let alone the math to quantify them.
+This question seems to follow every preventable catastrophe in organizations. Teams often see the warning signs ahead of time, but lack the language to name them, let alone the math to quantify them.
 
 Organizational dysfunction follows one or more of 12 geometric patterns that repeat at scales from individual conversations, to inter-team dynamics, to full systemic communication health.
 
